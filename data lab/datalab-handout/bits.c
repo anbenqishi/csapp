@@ -1,7 +1,7 @@
 /* 
  * CS:APP Data Lab 
  * 
- * <Please put your name and userid here>
+ * <anbenqishi>
  * 
  * bits.c - Source file with your solutions to the Lab.
  *          This is the file you will hand in to your instructor.
@@ -143,7 +143,8 @@ NOTES:
  *   Rating: 1
  */
 int bitXor(int x, int y) {
-  return 2;
+  int ret = ~(~x & ~y) & ~(x & y);
+  return ret;
 }
 /* 
  * tmin - return minimum two's complement integer 
@@ -152,8 +153,8 @@ int bitXor(int x, int y) {
  *   Rating: 1
  */
 int tmin(void) {
-
-  return 2;
+  int ret = 1 << 31;
+  return ret;
 
 }
 //2
@@ -165,7 +166,9 @@ int tmin(void) {
  *   Rating: 1
  */
 int isTmax(int x) {
-  return 2;
+  int max = (1u << 31) - 1;
+  int ret = !(x ^ max);
+  return ret;
 }
 /* 
  * allOddBits - return 1 if all odd-numbered bits in word set to 1
@@ -176,7 +179,8 @@ int isTmax(int x) {
  *   Rating: 2
  */
 int allOddBits(int x) {
-  return 2;
+  int ret = !!((x >> 24 & 0xaa) | (x >> 16 & 0xaa) | (x >> 8 & 0xaa) | (x & 0xaa));
+  return ret;
 }
 /* 
  * negate - return -x 
@@ -185,8 +189,11 @@ int allOddBits(int x) {
  *   Max ops: 5
  *   Rating: 2
  */
+// 没考虑越界的情况 todo
 int negate(int x) {
-  return 2;
+  int ret = (~x + 1) ^ x ^ x;
+  int equal = ret ^ x ^ x;
+  return ret;
 }
 //3
 /* 
@@ -204,7 +211,7 @@ int isAsciiDigit(int x) {
 /* 
  * conditional - same as x ? y : z 
  *   Example: conditional(2,4,5) = 4
- *   Legal ops: ! ~ & ^ | + << >>
+ *   Legal ops: ! ~ & ^ | + << >> 
  *   Max ops: 16
  *   Rating: 3
  */
