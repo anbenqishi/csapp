@@ -166,9 +166,7 @@ int tmin(void) {
  *   Rating: 1
  */
 int isTmax(int x) {
-  int max = (1u << 31) - 1;
-  int ret = !(x ^ max);
-  return ret;
+  return (x ^ ~0) & !((~x + x) ^ ~0);
 }
 /* 
  * allOddBits - return 1 if all odd-numbered bits in word set to 1
@@ -189,10 +187,9 @@ int allOddBits(int x) {
  *   Max ops: 5
  *   Rating: 2
  */
-// 没考虑越界的情况 todo
+// out-of-boundary @todo
 int negate(int x) {
   int ret = (~x + 1) ^ x ^ x;
-  int equal = ret ^ x ^ x;
   return ret;
 }
 //3
@@ -206,6 +203,11 @@ int negate(int x) {
  *   Rating: 3
  */
 int isAsciiDigit(int x) {
+  // int top24 = !!((x >> 8) & 0xffffff);
+  // int low8 = x & 0xff;
+  // int low4 = x & 0xf;
+  // int low8_high4 = !!((low8 >> 4) ^ 0x3); // suppose = 0
+  // return !top24 & !low8_high4 & !((low4 | 0x7) ^ 0x7) & !((low4 | 0x9) ^ 0x9);
   return 2;
 }
 /* 
@@ -216,6 +218,13 @@ int isAsciiDigit(int x) {
  *   Rating: 3
  */
 int conditional(int x, int y, int z) {
+  // int zero_or_one = !!x;
+  // int all_1 = ~0;
+  // int all_0_1 = ~~bool_type;
+  // int check_y = all_0_1 & y;
+  
+  // !!x == 0 -> z
+  // !!x == 1 -> y
   return 2;
 }
 /* 
