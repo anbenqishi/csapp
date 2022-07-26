@@ -166,7 +166,7 @@ int tmin(void) {
  *   Rating: 1
  */
 int isTmax(int x) {
-  return (x ^ ~0) & !((~x + x) ^ ~0);
+  return !!(x ^ ~0) & !(~(x+1) ^ x);
 }
 /*
  * allOddBits - return 1 if all odd-numbered bits in word set to 1
@@ -177,7 +177,7 @@ int isTmax(int x) {
  *   Rating: 2
  */
 int allOddBits(int x) {
-  int ret = !!((x >> 24 & 0xaa) | (x >> 16 & 0xaa) | (x >> 8 & 0xaa) | (x & 0xaa));
+  int ret = !((((x >> 24) & 0xaa) & ((x >> 16) & 0xaa) & ((x >> 8) & 0xaa) & (x & 0xaa)) ^ 0xaa);
   return ret;
 }
 /*
@@ -203,8 +203,8 @@ int negate(int x) {
  *   Rating: 3
  */
 int isAsciiDigit(int x) {
-  int low4 = x >> 4 ^ 0x3;
-  return !low4 & (!(x ^ 0x8) | !(x ^ 0x9) | !!(x ^ 0x7 & 0x8 ^ 0x8));
+  int low_four = x & 0xf;
+  return (!((x >> 4) ^ 0x3)) & ((!(low_four ^ 0x8)) | (!(low_four ^ 0x9)) | (!!((low_four & 0x8) ^ 0x8)));
 }
 /*
  * conditional - same as x ? y : z
@@ -214,14 +214,7 @@ int isAsciiDigit(int x) {
  *   Rating: 3
  */
 int conditional(int x, int y, int z) {
-  // int zero_or_one = !!x;
-  // int all_1 = ~0;
-  // int all_0_1 = ~~bool_type;
-  // int check_y = all_0_1 & y;
-
-  // !!x == 0 -> z
-  // !!x == 1 -> y
-  return 2;
+  return ((~(!x + 0) + 1) & z) | ((~(!!x + 0) + 1) & y);
 }
 /*
  * isLessOrEqual - if x <= y  then return 1, else return 0
