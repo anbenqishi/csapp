@@ -224,9 +224,18 @@ int conditional(int x, int y, int z) {
  *   Rating: 3
  */
 int isLessOrEqual(int x, int y) {
+  int opx = (x >> 24) & 0x80;
+  int opy = (y >> 24) & 0x80;
+  int opx_minus_opy = opx + 1 + ~opy;
+  int check_op_high8 = ((opx_minus_opy >> 24) & 0x80) ^ 0x80;
   int x_minus_y = x + 1 + ~y;
-  int check_high_8 = (x_minus_y >> 24) & 0x80 ^ 0x80;
-  return !(x_minus_y ^ 0) | !check_high_8;
+  int check_high_8 = ((x_minus_y >> 24) & 0x80) ^ 0x80;
+  //return !(opx ^ opy) & (!(x_minus_y ^ 0) | !check_high_8);
+
+  int cond_x = opx_minus_opy ^ 0;
+  int cond_y = !!check_op_high8;
+  int cond_z = !(x_minus_y ^ 0) | !check_high_8;
+  return ((~(!cond_x + 0) + 1) & cond_z) | ((~(!!cond_x + 0) + 1) & cond_y);
 }
 //4
 /*
