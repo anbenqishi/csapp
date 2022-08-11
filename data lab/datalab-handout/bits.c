@@ -262,12 +262,49 @@ int logicalNeg(int x) {
  *  Rating: 4
  */
 int howManyBits(int x) {
-  int first = (x >> 24) & 0xff;
-  int second = (x >> 16) & 0xff;
-  int third = (x >> 8) & 0xff;
-  int last = x & 0xff;
-  
-  return 0;
+
+  int bit31 = (x >> 31) & 0x1;
+  int bit31_zero = ~(!bit31 + 0) + 1;
+  int bit31_one = ~bit31 + 1;
+  int n = 1;
+  int pos_x = (bit31_zero & x) | (bit31_one & (~x + 1));
+
+  int bit0 = pos_x;
+  int bit1 = pos_x >> 1;
+  int bit2 = pos_x >> 2; 
+  int bit3 = pos_x >> 3;
+  int bit4 = pos_x >> 4;
+  int bit5 = pos_x >> 5;
+  int bit6 = pos_x >> 6;
+  int bit7 = pos_x >> 7;
+  int bit8 = pos_x >> 8;
+  int bit9 = pos_x >> 9;
+  int bit10 = pos_x >> 10;
+  int bit11 = pos_x >> 11;
+  int bit12 = pos_x >> 12;
+  int bit13 = pos_x >> 13;
+  int bit14 = pos_x >> 14;
+  int bit15 = pos_x >> 15;
+  int bit16 = pos_x >> 16;
+  int bit17 = pos_x >> 17;
+  int bit18 = pos_x >> 18;
+  int bit19 = pos_x >> 19;
+  int bit20 = pos_x >> 20;
+  int bit21 = pos_x >> 21;
+  int bit22 = pos_x >> 22;
+  int bit23 = pos_x >> 23;
+  int bit24 = pos_x >> 24;
+  int bit25 = pos_x >> 25;
+  int bit26 = pos_x >> 26;
+  int bit27 = pos_x >> 27;
+  int bit28 = pos_x >> 28;
+  int bit29 = pos_x >> 29;
+  int bit30 = pos_x >> 30;
+          
+  /* search for highest 1 */
+  // bit16 == 1 ? +17 : (bit8 == 1 ? +9 : )
+  n = ((~(!!bit16 + 0) + 1) & (n + 1)) | ((~(!bit16 + 0) + 1) & n);  
+  return n;
 }
 //float
 /*
