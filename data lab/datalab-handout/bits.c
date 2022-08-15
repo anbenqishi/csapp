@@ -224,12 +224,12 @@ int conditional(int x, int y, int z) {
  *   Rating: 3
  */
 int isLessOrEqual(int x, int y) {
-  int opx = (x >> 31) & 0x1; 
+  int opx = (x >> 31) & 0x1;
   int opy = (y >> 31) & 0x1;
   int x_minus_y = x + 1 + ~y;
   int check_high_8 = ((x_minus_y >> 24) & 0x80) ^ 0x80;
 
-  int cond_x = opx ^ opy; 
+  int cond_x = opx ^ opy;
   int cond_y = opx;
   int cond_z = !(x_minus_y ^ 0) | !check_high_8;
   return ((~(!cond_x + 0) + 1) & cond_z) | ((~cond_x + 1) & cond_y);
@@ -262,49 +262,38 @@ int logicalNeg(int x) {
  *  Rating: 4
  */
 int howManyBits(int x) {
-
   int bit31 = (x >> 31) & 0x1;
   int bit31_zero = ~(!bit31 + 0) + 1;
   int bit31_one = ~bit31 + 1;
-  int n = 1;
   int pos_x = (bit31_zero & x) | (bit31_one & (~x + 1));
 
-  int bit0 = pos_x;
-  int bit1 = pos_x >> 1;
-  int bit2 = pos_x >> 2; 
-  int bit3 = pos_x >> 3;
-  int bit4 = pos_x >> 4;
-  int bit5 = pos_x >> 5;
-  int bit6 = pos_x >> 6;
-  int bit7 = pos_x >> 7;
-  int bit8 = pos_x >> 8;
-  int bit9 = pos_x >> 9;
-  int bit10 = pos_x >> 10;
-  int bit11 = pos_x >> 11;
-  int bit12 = pos_x >> 12;
-  int bit13 = pos_x >> 13;
-  int bit14 = pos_x >> 14;
-  int bit15 = pos_x >> 15;
-  int bit16 = pos_x >> 16;
-  int bit17 = pos_x >> 17;
-  int bit18 = pos_x >> 18;
-  int bit19 = pos_x >> 19;
-  int bit20 = pos_x >> 20;
-  int bit21 = pos_x >> 21;
-  int bit22 = pos_x >> 22;
-  int bit23 = pos_x >> 23;
-  int bit24 = pos_x >> 24;
-  int bit25 = pos_x >> 25;
-  int bit26 = pos_x >> 26;
-  int bit27 = pos_x >> 27;
-  int bit28 = pos_x >> 28;
-  int bit29 = pos_x >> 29;
-  int bit30 = pos_x >> 30;
-          
-  /* search for highest 1 */
-  // bit16 == 1 ? +17 : (bit8 == 1 ? +9 : )
-  n = ((~(!!bit16 + 0) + 1) & (n + 1)) | ((~(!bit16 + 0) + 1) & n);  
-  return n;
+  int bit0, bit1, bit2, bit4, bit8, bit16;
+  int b16, b8, b4, b2, b1, b0;
+
+  /* binary search for highest 1 */
+  bit16 = pos_x >> 16;
+  b16 = !!bit16 << 4;
+  pos_x = bit16 | ((~(!b16 + 0) + 1) & pos_x);
+
+  bit8 = pos_x >> 8;
+  b8  = !!bit8 << 3;
+  pos_x = bit8 | ((~(!b8 + 0) + 1) & pos_x);
+
+  bit4 = pos_x >> 4;
+  b4   = !!bit4 << 2;
+  pos_x = bit4 | ((~(!b4 + 0) + 1) & pos_x);
+
+  bit2 = pos_x >> 2;
+  b2   = !!bit2 << 2;
+  pos_x = bit2 | ((~(!b2 + 0) + 1) & pos_x);
+
+  bit1 = pos_x >> 1;
+  b1   = !!bit1 << 1;
+  pos_x = bit1 | ((~(!b1 + 0) + 1) & pos_x);
+
+  b0 = 1;
+
+  return b16 + b8 + b4 + b2 + b1 + b0;
 }
 //float
 /*
