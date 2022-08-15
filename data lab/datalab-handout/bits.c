@@ -265,9 +265,13 @@ int howManyBits(int x) {
   int bit31 = (x >> 31) & 0x1;
   int bit31_zero = ~(!bit31 + 0) + 1;
   int bit31_one = ~bit31 + 1;
+  // int n = bit31_zero & 0x1; printf("%d %d\n", bit31_zero, n);
   int pos_x = (bit31_zero & x) | (bit31_one & (~x + 1));
+  int new_sign = (pos_x >> 31) & 0x1;
+  int same = bit31 ^ new_sign;
+  int n = ((~(!same + 0) + 1) & !new_sign) | ((~same + 1) & ~0);
 
-  int bit0, bit1, bit2, bit4, bit8, bit16;
+  int bit1, bit2, bit4, bit8, bit16;
   int b16, b8, b4, b2, b1, b0;
 
   /* binary search for highest 1 */
@@ -284,16 +288,16 @@ int howManyBits(int x) {
   pos_x = bit4 | ((~(!b4 + 0) + 1) & pos_x);
 
   bit2 = pos_x >> 2;
-  b2   = !!bit2 << 2;
+  b2   = !!bit2 << 1;
   pos_x = bit2 | ((~(!b2 + 0) + 1) & pos_x);
 
   bit1 = pos_x >> 1;
-  b1   = !!bit1 << 1;
+  b1   = !!bit1;
   pos_x = bit1 | ((~(!b1 + 0) + 1) & pos_x);
 
-  b0 = 1;
+  b0 = !!pos_x; printf("%d %d %d %d %d %d %d pos=%d\n", n, b16, b8, b4, b2, b1, b0, pos_x);
 
-  return b16 + b8 + b4 + b2 + b1 + b0;
+  return n + b16 + b8 + b4 + b2 + b1 + b0;
 }
 //float
 /*
