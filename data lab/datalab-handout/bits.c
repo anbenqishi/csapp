@@ -268,7 +268,7 @@ int howManyBits(int x) {
       1000 0000 -> 0111 1111(8 -> 8)-> 1000 0000 (8 -> 8)【没有对应的正数表示，但不影响结果】
       1000 0001 -> 0111 1110(8 -> 8)-> 0111 1111 (8 -> 8)
       1111 1110 -> 0000 0001(2 -> 2)-> 0000 0010 (2 -> 3)
-      1111 1111 -> 0000 0000(1 -> 1)
+      这样看，直接取反更简单，更不用考虑负值所对应的实际正值;
    3. 正数bit的计算：
        二分法：以bit16为界，如果高位 != 0, 则继续在后16bit二分；否则在低位二分；
        为保持操作的一致性，通过高位右移，可以统一在低位做二分操作；
@@ -284,18 +284,23 @@ int howManyBits(int x) {
       IF 高2bit不为0
          x = x >> 2;
          记录bit数;
-      对于普通正数来说，此时有00，01两种情况;
-      对于符号位, 我们固定取1， 这样只要看bit1即可;
+      最后2bit有 00，11(低位)，01，10(低位);
+      对于符号位, 我们固定取1;这样 1X型直接取2，0X型取bit0的值即可;
    */
   int bit31 = (x >> 31) & 0x1;
   int bit31_zero = ~(!bit31 + 0) + 1;
   int bit31_one = ~bit31 + 1;
   int pos_x = (bit31_zero & x) | (bit31_one & (~x));
 
-  int bit1, bit2, bit4, bit8, bit16;
-  int b16, b8, b4, b2, b0;
+  int bit2, bit4, bit8, bit16;
+  int b16, b8, b4, b2, b1, b0;
 
   /* binary search for highest 1 */
+  /**
+   * if !!bitX == 0  ==> pos_x = bitX | pos_x
+   * if !!bitX == 1  ==> pos_x = bitX | 0
+   * so we use conditional function.
+   */
   bit16 = pos_x >> 16;
   b16 = !!bit16 << 4;
   pos_x = bit16 | ((~(!b16 + 0) + 1) & pos_x);
@@ -312,10 +317,10 @@ int howManyBits(int x) {
   b2   = !!bit2 << 1;
   pos_x = bit2 | ((~(!b2 + 0) + 1) & pos_x);
 
+  b1 = pos_x >> 1;
   b0 = pos_x & 0x1;
-  printf("%d %d %d %d %d pos=%d\n", b16, b8, b4, b2, b0, pos_x);
-
-  return 1 + b16 + b8 + b4 + b2 + b0;
+  b1 = ( (~(!b1 + 0) + 1) & (b0)) | ((~b1 + 1) & 2);
+  return 1 + b16 + b8 + b4 + b2 + b1;
 }
 //float
 /*
