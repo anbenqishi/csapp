@@ -262,17 +262,38 @@ int logicalNeg(int x) {
  *  Rating: 4
  */
 int howManyBits(int x) {
+  /*
+   1. 负数算数右移会补1，这里考虑所有负数都用正数来处理
+   2. 以8bit int为例，负数取反，有下述三种情况（括号内为所需最小位数表示）：
+      1000 0000 -> 0111 1111(8 -> 8)-> 1000 0000 (8 -> 8)【没有对应的正数表示，但不影响结果】
+      1000 0001 -> 0111 1110(8 -> 8)-> 0111 1111 (8 -> 8)
+      1111 1110 -> 0000 0001(2 -> 2)-> 0000 0010 (2 -> 3)
+      1111 1111 -> 0000 0000(1 -> 1)
+   3. 正数bit的计算：
+       二分法：以bit16为界，如果高位 != 0, 则继续在后16bit二分；否则在低位二分；
+       为保持操作的一致性，通过高位右移，可以统一在低位做二分操作；
+       IF 高16bit不为0
+          x = x >> 16;
+          记录bit数;
+       IF 高8bit不为0
+         x = x >> 8;
+         记录bit数;
+      IF 高4bit不为0
+         x = x >> 4;
+         记录bit数；
+      IF 高2bit不为0
+         x = x >> 2;
+         记录bit数;
+      对于普通正数来说，此时有00，01两种情况;
+      对于符号位, 我们固定取1， 这样只要看bit1即可;
+   */
   int bit31 = (x >> 31) & 0x1;
   int bit31_zero = ~(!bit31 + 0) + 1;
   int bit31_one = ~bit31 + 1;
-  // int n = bit31_zero & 0x1; printf("%d %d\n", bit31_zero, n);
-  int pos_x = (bit31_zero & x) | (bit31_one & (~x + 1));
-  int new_sign = (pos_x >> 31) & 0x1;
-  int same = bit31 ^ new_sign;
-  int n = ((~(!same + 0) + 1) & !new_sign) | ((~same + 1) & ~0);
+  int pos_x = (bit31_zero & x) | (bit31_one & (~x));
 
   int bit1, bit2, bit4, bit8, bit16;
-  int b16, b8, b4, b2, b1, b0;
+  int b16, b8, b4, b2, b0;
 
   /* binary search for highest 1 */
   bit16 = pos_x >> 16;
@@ -291,13 +312,10 @@ int howManyBits(int x) {
   b2   = !!bit2 << 1;
   pos_x = bit2 | ((~(!b2 + 0) + 1) & pos_x);
 
-  bit1 = pos_x >> 1;
-  b1   = !!bit1;
-  pos_x = bit1 | ((~(!b1 + 0) + 1) & pos_x);
+  b0 = pos_x & 0x1;
+  printf("%d %d %d %d %d pos=%d\n", b16, b8, b4, b2, b0, pos_x);
 
-  b0 = !!pos_x; printf("%d %d %d %d %d %d %d pos=%d\n", n, b16, b8, b4, b2, b1, b0, pos_x);
-
-  return n + b16 + b8 + b4 + b2 + b1 + b0;
+  return 1 + b16 + b8 + b4 + b2 + b0;
 }
 //float
 /*
