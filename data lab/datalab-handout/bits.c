@@ -285,7 +285,7 @@ int howManyBits(int x) {
          x = x >> 2;
          记录bit数;
       最后2bit有 00，11(低位)，01，10(低位);
-      对于符号位, 我们固定取1;这样 1X型直接取2，0X型取bit0的值即可;
+      对于符号位, 我们固定取1;这样 1X型 直接取2，0X型 取bit0的值即可;
    */
   int bit31 = (x >> 31) & 0x1;
   int bit31_zero = ~(!bit31 + 0) + 1;
@@ -297,8 +297,8 @@ int howManyBits(int x) {
 
   /* binary search for highest 1 */
   /**
-   * if !!bitX == 0  ==> pos_x = bitX | pos_x
-   * if !!bitX == 1  ==> pos_x = bitX | 0
+   * if !!bitX == 0  ==> pos_x = bitX | pos_x = pos_x不变
+   * if !!bitX == 1  ==> pos_x = bitX | 0 = bitX更新
    * so we use conditional function.
    */
   bit16 = pos_x >> 16;
@@ -335,6 +335,13 @@ int howManyBits(int x) {
  *   Rating: 4
  */
 unsigned floatScale2(unsigned uf) {
+  /**
+   * 单精度表示：
+   * sign(bit31) + exp(8bits, bit30~bit23) + fraction(23bits, bit22 ~ bit0) = 32bits
+   * exp - 127 才是实际的有效exp值
+   * 
+   * 
+   */
   return 2;
 }
 /*
