@@ -344,27 +344,19 @@ unsigned floatScale2(unsigned uf) {
    * 规约数： 1 <= exp <= 254, 实际尾数[1, 2)
    * 非规约数： exp = 0, 对应实际指数=-126, fraction != 0, 对应实际尾数(0, 1)
    */
-  int sign = (uf >> 31) & 0x1;
-  int exp = (uf >> 23) & 0xff;
+  unsigned high9 = uf >> 23;
+  int exp = high9 & 0xff;
   int expscale2 = exp - 126; // 指数 * 2
   unsigned faction = uf << 9;
-  int fac_num = (uf & 0xff) | ((uf >> 8) & 0xff) | ((uf >> 16) & 0x7f);
   /* NaN or ∞ or illegal */
-  if (exp == 255/* || fac_num */ || expscale2 >= 0x80)
+  if (exp == 255 || expscale2 > 0x80)
     return uf;
-
-  /* 0 */
-  if (exp == 0 && fac_num == 0)
-    return uf;
-
   /* 非规约数 */
   if (exp == 0) {
-    if ((uf >> 22) & 0x1 == 1)
-      return uf;
-    return ((uf >> 23) << 23) | ((faction << 1) >> 9);
+    return ((uf >> 31) << 31) | (uf << 1);
   }
   /* 归约数 */
-  return ((uf >> 23 + 1) << 23) | (faction >> 9);
+  return ((high9 + 1) << 23) | (faction >> 9);
 }
 /*
  * floatFloat2Int - Return bit-level equivalent of expression (int) f
