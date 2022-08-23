@@ -371,7 +371,35 @@ unsigned floatScale2(unsigned uf) {
  *   Rating: 4
  */
 int floatFloat2Int(unsigned uf) {
-  return 2;
+  /**
+   * 最大的非规约数： exp = 0, fraction=7fffff  < 1
+   * 规约数：
+   *  exp应 >= 127=0x7f, 否则取整后都是0, exp <= 0xfe
+   * 基本可不考虑fraction？
+   *    exp=0, fraction=1/1.5, so float=1.5, int=1
+   *    exp=1, fraction=1.5, so float=3, int = 3 = 0011
+   *    exp=2, fraction=1, so float=4, int = 4 = 0100
+   *    exp=2, fraction=1.5, so float=6, int = 6 = 0110
+   *    exp=3, fraction=1.5, so float=12, int = 12 = 1100
+   *    exp=4, fraction=1.5, so float=24, int = 12 = 11000 = (1 << 4) + (1 << 3)
+   */
+  unsigned high9 = uf >> 23;
+  int exp = high9 & 0xff;
+  int real_exp = exp - 127;
+  unsigned sign = (uf >> 31) & 0x1;
+  int result;
+  /* NaN or ∞ */
+  if (exp == 255 || real_exp > 32)
+    return 0x80000000u;
+  /* 非规约数 or 小的规约数 */
+  if (exp == 0 || exp < 0x7f) {
+    return 0;
+  }
+  /* 归约数 */
+  result = (1 << real_exp) + (1 << (real_exp - 1));
+  if (exp == 0x7f) result = 1;
+  if (sign == 1) return -result;
+  return result;
 }
 /*
  * floatPower2 - Return bit-level equivalent of the expression 2.0^x
