@@ -429,9 +429,10 @@ unsigned floatPower2(int x) {
  *    x = -126, exp = 1
  *    x = -125, exp = 2
  *    x = 127,  exp = 254 = 0xfe
+ * 以下代码会提示超时（10s），我把时间调大会过，网上的说法是可能电脑性能不行，导致检测数据集跑不完...
  */
     if (x < -149) return 0;
-    if (x > 127) return 0x7f800000;
+    if (x > 127)  return 0x7f800000;
     /* 非规约数 */
     if (x <= -127) {
       return 1 << (23 + (x + 126));
