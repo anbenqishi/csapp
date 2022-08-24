@@ -415,5 +415,27 @@ int floatFloat2Int(unsigned uf) {
  *   Rating: 4
  */
 unsigned floatPower2(int x) {
-    return 2;
+/**
+ * 最大归约数： exp = 254 = 0xfe, fraction = 0x7fffff, float = (2 - 2**(-23)) * 2**(127)
+ * 最小归约数： exp = 1, fraction = 0, float = 2**(-126)
+ * 最小非归约数： exp = 0, fraction = 0x1, float = 2**(-149)
+ * 最大非归约数： exp = 0, fraction = 0x7fffff, float = (1−2**(−23)) × 2**(−126)
+ * so  -149 <= x <= 127
+ * x <= -127, exp = 0
+ *    x = -127, fraction = 0x400000 = 1 << 22
+ *    x = -128, fraction = 0x200000 = 1 << 21
+ *    x = -149, fraction = 0x1      = 1 << 0
+ * x > -127, fraction = 0
+ *    x = -126, exp = 1
+ *    x = -125, exp = 2
+ *    x = 127,  exp = 254 = 0xfe
+ */
+    if (x < -149) return 0;
+    if (x > 127) return 0x7f800000;
+    /* 非规约数 */
+    if (x <= -127) {
+      return 1 << (23 + (x + 126));
+    }
+    /* 归约数 */
+    return (x + 127) << 23;
 }
