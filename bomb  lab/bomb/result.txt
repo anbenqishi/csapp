@@ -1,1 +1,26 @@
 Border relations with Canada have never been better.
+
+
+
+rsi = rsp;
+read_six_numbers:
+    进入时：rsp -= 24;
+    (rsp + 8) = rsi + 20;
+    (rsp) = rsi + 16;
+    sscanf("", rdi, 0x4025c3, input_rsi, rsi+4, rsi+8, rsi+12);
+    恢复：rsp += 24;
+if ((rsp) == 1) {
+    rbx = rsp + 4;
+    rbp = rsp + 24;
+    goto A;
+}
+A:
+    eax = rbx - 4;
+    eax = eax + eax;
+    if ((rbx) == eax) {
+        rbx += 4;
+        if (rbx != rbp) {
+            goto A;
+        }
+        exit;
+    }
