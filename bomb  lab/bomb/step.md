@@ -28,7 +28,7 @@ if ((rsp) == 1) {
     explode_bomb
 }
 A:
-    eax = 2*(rbx - 4);
+    eax = 2*[(rbx - 4)];
     if ((rbx) == eax) {
         rbx += 4;
         if (rbx != rbp) {
