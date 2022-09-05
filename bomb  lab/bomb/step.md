@@ -47,3 +47,39 @@ A:
 
 ## 第三个炸弹
 
+```c
+    rsp -= 24    // 3格
+    rcx = rsp + 12
+    rdx = rsp + 8
+    esi = 0x4025cf   "%d %d"
+    eax = 0
+    sscanf(rdi, "%d %d", rdx, rcx);
+    if (eax > 1) {
+        if ((rsp + 8) > 7) {
+            explode
+        } else {
+            eax = (rsp + 8)
+            goto *(rax * 8 + 0x402470) [0x400f7c]
+            eax = 0xcf
+            if (eax == (rsp + 12)) {
+                rsp += 18   // exit
+            } else {
+                explode
+            }
+        }
+    } else {
+        explode
+    }
+```
+
+===> 这题貌似有多个答案，很快做出来了，但是寄存器rcx,rdx那边理解有点偏差，卡了一下
+0 207
+2 0x2c3
+3 0x100
+4 0x185
+5 0xce
+6 0x2aa
+7 0x147
+
+## 第三个炸弹
+
