@@ -81,5 +81,67 @@ A:
 6 0x2aa
 7 0x147
 
-## 第三个炸弹
+## 第四个炸弹
+
+```c
+
+rsp -= 24;
+rcx = rsp + 12; // 2nd
+rdx = rsp + 8;  // 1st
+[esi] = "%d %d"
+eax = 0;
+sscanf(rdi, "%d %d", rdx, rcx);
+if (eax != 2) {
+    explode;
+    return;
+}
+if (1st <= 14) {              // !!!!!!!
+    edx = 14;
+    esi = 0;
+    edi = 1st;
+    func4(1st, 0, 14);
+    if (eax & eax != 0) {
+        explode; return;
+    } else {                 // !!!!!!!
+        if (2nd == 0) {
+            rsp += 24;
+            return;
+        } else {explode;}
+    }
+} else {
+    explode;
+    return;
+}
+
+
+func4(edi=1st, esi=0, edx=14) {
+    rsp -= 8;
+    eax = edx;  //14
+    eax -= esi; //14
+    ecx = eax;  //14
+    ecx >>= 31; //0
+    eax += ecx; //14
+    eax >>= 1;  //7
+    ecx = rsi + rax; //7
+    if (ecx <= edi) {
+        eax =  0;
+        if (ecx >= edi) {
+            rsp += 8;
+            return;
+        } else {
+            esi = rcx + 1;
+            func4();
+            eax = rax + rax + 1;
+            rsp += 8;
+            return;
+        }
+    } else {
+        edx = rcx - 1;
+        func4();
+        eax += eax;
+        rsp += 8;
+        return;
+    }
+}
+```
 
