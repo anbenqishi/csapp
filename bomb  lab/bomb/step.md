@@ -145,3 +145,14 @@ func4(edi=1st, esi=0, edx=14) {
 }
 ```
 
+## 第5个炸弹
+
+```
+    save rbx;
+    rsp -= 32; // 4 * 8
+    rbx = rdi; // 1st
+    rax = %fs:40;
+    (rsp + 24) = rax;
+    eax = eax ^ eax;
+    string_length(rdi, rsi...);
+    if ()
