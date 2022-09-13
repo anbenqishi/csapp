@@ -147,12 +147,40 @@ func4(edi=1st, esi=0, edx=14) {
 
 ## 第5个炸弹
 
+1. sub比较的是内存里村的数据吗，还是两个寄存器值？
+
 ```
     save rbx;
     rsp -= 32; // 4 * 8
     rbx = rdi; // 1st
     rax = %fs:40;
     (rsp + 24) = rax;
-    eax = eax ^ eax;
-    string_length(rdi, rsi...);
-    if ()
+    eax = eax ^ eax; // 清0
+    string_length(rdi); // 6个字符
+    if (eax == 6) {
+        eax = 0;
+A:
+        ecx = (rax + rbx); //movzbl
+        (rsp)  = cl; // 1B = char
+        rdx = (rsp);
+        edx = edx & 0xf;
+        edx = (rdx + 0x4024b0); // movzbl
+        (rax + rsp + 16) = dl;
+        rax = rax + 1;
+        if (rax != 6) {
+            goto A;
+        } else {
+            (rsp + 22)  = 0; // byte
+            esi = 0x40245e;
+            rdi = rsp + 16;
+            strings_not_equal(rdi, rsi);
+            if (eax & eax == 0) {
+                rax = (rsp + 24);
+                rax ^= %fs:0x28;
+                je;
+                rsp += 32;
+                pop rbx;
+                return;
+            } else { explode; }
+        }
+    } else { explode; }
