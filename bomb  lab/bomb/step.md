@@ -149,12 +149,12 @@ func4(edi=1st, esi=0, edx=14) {
 
 1. sub比较的是内存里村的数据吗，还是两个寄存器值？
 
-```
+```c
     save rbx;
     rsp -= 32; // 4 * 8
     rbx = rdi; // 1st
     rax = %fs:40;
-    (rsp + 24) = rax;
+    (rsp + 24) = rax; // ""
     eax = eax ^ eax; // 清0
     string_length(rdi); // 6个字符
     if (eax == 6) {
@@ -171,7 +171,7 @@ A:
             goto A;
         } else {
             (rsp + 22)  = 0; // byte
-            esi = 0x40245e;
+            esi = 0x40245e;  // "flyers"
             rdi = rsp + 16;
             strings_not_equal(rdi, rsi);
             if (eax & eax == 0) {
@@ -184,3 +184,5 @@ A:
             } else { explode; }
         }
     } else { explode; }
+
+```
