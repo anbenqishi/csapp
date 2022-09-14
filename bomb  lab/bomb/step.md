@@ -3,7 +3,8 @@
 
 ## 第二个炸弹
 我把汇编写成类似C的形式比较好看一点
-```
+
+```c
 rsp -= 40;
 rsi = rsp;
 read_six_numbers:
@@ -185,4 +186,149 @@ A:
         }
     } else { explode; }
 
+```
+
+1. 查看 0x4024b0 附近100个B的数据？
+
+
+## 第6个炸弹
+1. 还是6个数字；
+2.
+
+-------
+           <--- old rsp
+-------
+      72
+-------
+      64
+-------
+      56
+-------
+      48
+-------
+      40
+-------
+      32
+-------
+      24
+-------
+[6] [5]
+-------
+[4] [3]
+-------
+[2] [1]   <---  phase_6 rsp [r13, rsi init]
+-------
+
+```c
+
+    save r14, r13, r12, rbp, rbx;
+    rsp -= 8 * 10;
+    r13  = rsp;
+    rsi  = rsp;
+    read_six_numbers(rdi, rsi);
+        read_six_numbers:
+        进入时：rsp -= 24;
+        rdx = rsi; // parameter 3
+        rcx = rsi + 4; // parameter 4
+        rax = rsi + 20;
+        (rsp + 8) = rax = rsi + 20;
+        (rsp) = rsi + 16;
+        r9 = rsi + 12; // parameter 6
+        r8 = rsi + 8;  // parameter 5
+        esi = 0x4025c3; // parameter 2   "%d %d %d %d %d %d"
+        eax = 0;
+        sscanf(rdi, "%d %d %d %d %d %d", rdx, rcx, rsi+8, rsi+12, num1?, num2?);
+        if (eax > 5)
+            恢复：rsp += 24;
+
+    r14 = rsp;
+    r12d = 0;
+D:
+    rbp = r13;   // [1][2]
+    eax = (r13); // [1]
+    eax -= 1;
+    if (eax >= 5) {  // [1] >= 6
+        r12d += 1;
+        if (r12d == 6) {
+            rsi = rsp + 24;
+            rax = r14;
+            ecx = 7;
+A:
+            edx = ecx;
+            edx -= (rax);
+            (rax) = edx;
+            rax += 4;
+            if (rax != rsi) {
+                goto A;
+            }
+            esi = 0;
+G:
+            ecx = (rsi + rsp);
+            if (ecx <= 1) {
+                edx = 0x6032d0;
+F:
+                (rsi*2+rsp + 32) = rdx;
+                rsi += 4;
+                if (rsi == 24) {
+                    rbx = (rsp + 32);
+                    rax = rsp + 40;
+                    rsi = rsp + 80;
+                    rcx = rbx;
+H:
+                    rdx = (rax);
+                    (rcx+8) = rdx;
+                    rax += 8;
+                    if (rax == rsi) {
+                        (rdx+8) = 0;
+                        ebp = 5;
+B:
+                        rax = (rbx+8);
+                        eax = (rax);
+                        if ((rbx) < eax) {
+                            explode;
+                            return;
+                        }
+                        rbx = (rbx + 8);
+                        ebp -= 1;
+                        if (ebp != 0) {  // sub后的jne
+                            goto B;
+                        }
+                        rsp += 8 * 10;
+                        pop rbx, rbp, r12, r13, r14;
+                        return;
+                    } else {
+                        rcx = rdx;
+                        goto H;
+                    }
+                } else {
+                    goto G;
+                }
+            } else {
+                eax = 1;
+                edx = 0x6032d0;
+E:
+                rdx = (rdx + 8);
+                eax += 1;
+                if (eax != ecx) {
+                    goto E;
+                } else {
+                    goto F;
+                }
+            }
+        } else {
+            ebx = r12d;
+C:
+            rax = ebx; //movslq
+            eax = (rax*4+rsp);
+            if ((rbp) != eax) {
+                ebx +=1;
+                if (ebx <= 5) {
+                    goto C;
+                } else {
+                    r13 += 4;
+                    goto D;
+                }
+            } else { explode; }
+        }
+    } else { explode; }
 ```
