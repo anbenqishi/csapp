@@ -149,7 +149,14 @@ func4(edi=1st, esi=0, edx=14) {
 ## 第5个炸弹
 
 1. sub比较的是内存里村的数据吗，还是两个寄存器值？
-
+2. f l   y e r s
+   9 15 14 5 6 7  
+   f: 102  0x66  -> 0x69  i
+   l: 108  0x6c  -> 0x6f  o
+   y: 121  0x79  -> 0x7e  ~  0x6e n   [验证结果都可以其实]
+   e: 101  0x65  -> 0x65  e
+   r: 114  0x72  -> 0x76  v
+   s: 115  0x73  -> 0x77  w
 ```c
     save rbx;
     rsp -= 32; // 4 * 8
@@ -172,7 +179,7 @@ A:
             goto A;
         } else {
             (rsp + 22)  = 0; // byte
-            esi = 0x40245e;  // "flyers"
+            esi = 0x40245e;  // "flyers" 
             rdi = rsp + 16;
             strings_not_equal(rdi, rsi);
             if (eax & eax == 0) {
@@ -188,7 +195,7 @@ A:
 
 ```
 
-1. 查看 0x4024b0 附近100个B的数据？
+1. 查看 0x4024b0 附近的数据？
 
 
 ## 第6个炸弹
