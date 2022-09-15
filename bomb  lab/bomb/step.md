@@ -1,7 +1,9 @@
 ## 第一个炸弹
+
 直接打印地址所对应的字符串即可；
 
 ## 第二个炸弹
+
 我把汇编写成类似C的形式比较好看一点
 
 ```c
@@ -85,7 +87,6 @@ A:
 ## 第四个炸弹
 
 ```c
-
 rsp -= 24;
 rcx = rsp + 12; // 2nd
 rdx = rsp + 8;  // 1st
@@ -146,18 +147,21 @@ func4(edi=1st, esi=0, edx=14) {
 }
 ```
 
-## 第5个炸弹
+## 第五个炸弹
 
 1. sub比较的是内存里村的数据吗，还是两个寄存器值？
+3. 查看 0x4024b0 附近的数据？ maduiersnfotvbyl
+
 2. f l   y e r s
-   9 15 14 5 6 7  
+   9 15 14 5 6 7
    f: 102  0x66  -> 0x69  i
    l: 108  0x6c  -> 0x6f  o
    y: 121  0x79  -> 0x7e  ~  0x6e n   [验证结果都可以其实]
    e: 101  0x65  -> 0x65  e
    r: 114  0x72  -> 0x76  v
    s: 115  0x73  -> 0x77  w
-```c
+
+   ```c
     save rbx;
     rsp -= 32; // 4 * 8
     rbx = rdi; // 1st
@@ -167,7 +171,7 @@ func4(edi=1st, esi=0, edx=14) {
     string_length(rdi); // 6个字符
     if (eax == 6) {
         eax = 0;
-A:
+   A:
         ecx = (rax + rbx); //movzbl
         (rsp)  = cl; // 1B = char
         rdx = (rsp);
@@ -179,7 +183,7 @@ A:
             goto A;
         } else {
             (rsp + 22)  = 0; // byte
-            esi = 0x40245e;  // "flyers" 
+            esi = 0x40245e;  // "flyers"
             rdi = rsp + 16;
             strings_not_equal(rdi, rsi);
             if (eax & eax == 0) {
@@ -192,16 +196,14 @@ A:
             } else { explode; }
         }
     } else { explode; }
+   ```
 
-```
+## 第六个炸弹
 
-1. 查看 0x4024b0 附近的数据？ maduiersnfotvbyl
-
-
-## 第6个炸弹
 1. 还是6个数字；
 2.
 
+<pre>
 -------
            <--- old rsp
 -------
@@ -225,9 +227,14 @@ A:
 -------
 [2] [1]   <---  phase_6 rsp [r13, rsi init]
 -------
+</pre>
+
+* [12345] >= 6,
+* 各不相同
+*
+
 
 ```c
-
     save r14, r13, r12, rbp, rbx;
     rsp -= 8 * 10;
     r13  = rsp;
@@ -251,21 +258,21 @@ A:
     r14 = rsp;
     r12d = 0;
 D:
-    rbp = r13;   // [1][2]
-    eax = (r13); // [1]
+    rbp = r13;   // [1][2]...[6]
+    eax = (r13); // [1]...[6]
     eax -= 1;
     if (eax >= 5) {  // [1] >= 6
         r12d += 1;
         if (r12d == 6) {
-            rsi = rsp + 24;
-            rax = r14;
+            rsi = rsp + 24; //
+            rax = r14;      // [1]
             ecx = 7;
 A:
-            edx = ecx;
-            edx -= (rax);
-            (rax) = edx;
-            rax += 4;
-            if (rax != rsi) {
+            edx = ecx;     // 7
+            edx -= (rax);  // 7 - [1]
+            (rax) = edx;   // (rax) = 7 - [1]
+            rax += 4;      // [2]
+            if (rax != rsi) { // [2] != [?]
                 goto A;
             }
             esi = 0;
