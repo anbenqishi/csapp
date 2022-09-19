@@ -373,6 +373,13 @@ C:
 
 ## 听说有彩蛋
 
+```shell
+b *0x4015f5
+set {char[11]}0x603870="0 0 DrEvil"
+//set {char[5]}0x603960 = "1001"
+b *0x40125d
+```
+
 ```c
 phase_defused() {
     rsp -= 0x78;
@@ -385,25 +392,25 @@ phase_defused() {
         r8 = rsp + 16;
         rcx = rsp + 0xc;
         rdx = rsp + 8;
-        esi = 0x402619;
-        edi = 0x603870;
+        esi = 0x402619;  "%d %d %s"
+        edi = 0x603870;  // set {char[20]}0x603870="0 0 DrEvil"
         sscanf(edi, esi, rdx, rcx , r8);
         if (eax != 3) {
 A:
-            puts(& 0x402558);
+            puts(& 0x402558); "Congratulations! You've defused the bomb!"
             rax = rsp + 0x68;
             // check fail;
             return;
         } else {
-            esi = 0x402622;
+            esi = 0x402622;  "DrEvil"
             rdi = rsp + 16;
             strings_not_equal(rdi, esi);
             if (eax & eax != 0) {
                 goto A;
             } else {
-                edi = 0x4024f8;
+                edi = 0x4024f8; "Curses, you've found the secret phase!"
                 puts(edi);
-                edi = 0x402520;
+                edi = 0x402520; "But finding it and solving it are quite different..."
                 puts(edi);
                 eax = 0;
                 secret_phase();
@@ -422,13 +429,13 @@ secret_phase:
     rdi = rax;
     strtol(rdi, NULL, 10);
     rbx = rax;
-    eax = rax-1;
+    eax = rax-1;   // breakpoint
     if (eax <= 0x3e8) {
-        esi = ebx;
-        edi = 0x6030f0;
-        fun7(edi, esi, ...);
-        if (eax = 2) {
-            edi = 0x402438;
+        esi = ebx;  // original value <= 0x3e9
+        edi = 0x6030f0;   // value = 36
+        fun7(edi, esi);
+        if (eax == 2) {
+            edi = 0x402438;  "Wow! You've defused the secret stage!"
             puts(edi);
             phase_defused();
             pop rbx;
@@ -438,29 +445,29 @@ secret_phase:
         explode;
     }
 
-fun7() {
+fun7(edi, esi) {  // 36, x
     rsp -= 8;
     if (rdi & rdi == 0) {
         eax = 0xffffffff;
         rsp += 8;
         return;
     }
-    edx = (rdi);
-    if (edx <= esi) {
+    edx = (rdi);  // 36   8  22
+    if (edx <= esi) {  // 8 <= x, 22 <= x
         eax = 0;
-        if (edx == esi) {
-            rsp += 8;
+        if (edx == esi) { // x != 8
+            rsp += 8;  // x == 22 
             return;
-        } else {
-            rdi = rdi + 16;
-            fun7();
+        } else {  // x > 8
+            rdi = [rdi + 16];  // 6304080 -> value = 22, 6304304 -> value 35
+            fun7();  // execute once here, so 35 is not the answer.
             eax = rax + rax + 1;
             rsp += 8;
             return;
         }
-    } else {
-        rdi = rdi + 8;
-        fun7();
+    } else {  // x < 36   first, execute this branch.
+        rdi = [rdi + 8];  // 6304016  -> value = 8
+        fun7();  // second. execute edx < esi branch, aka x > [rdi]
         eax += eax;
         rsp += 8;
         return;
