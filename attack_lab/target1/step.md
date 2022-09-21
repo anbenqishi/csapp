@@ -7,7 +7,7 @@
 b *0x4017b4
 run -q < raw.txt
 
-cat exploit.txt | ./hex2raw | ./ctarget -
+cat exploit.txt | ./hex2raw | ./ctarget -q
 ./hex2raw < exploit.txt > raw.txt
 ```
 
