@@ -29,3 +29,14 @@ cat exploit2.txt | ./hex2raw | ./ctarget -q
 
 ## level3
 
+1. cookie所对应的ascii:  61 66 37 39 39 62 39 35
+
+
+```shell
+./hex2raw < exploit3.txt > raw3.txt
+b *0x4017b4
+run -q < raw3.txt
+
+cat exploit3.txt | ./hex2raw | ./ctarget -q
+
+```
