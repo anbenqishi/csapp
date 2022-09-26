@@ -29,12 +29,29 @@ cat exploit2.txt | ./hex2raw | ./ctarget -q
 
 ## level3
 
-1. cookie所对应的ascii:  61 66 37 39 39 62 39 35
+1. cookie所对应的ascii:  35 39 62 39 39 37 66 61
+2. 调试发现，往getbuf的栈顶写，函数调用过程会栈上写数据，会被覆盖，不过在栈底再往下写，反正ret后的栈上数据是不会再被用到了；
+3. 注意一下偏移量；
+  
+<pre>
+-----
+       <-- test rsp   0x5561dca0
+-----
 
+-----
+
+-----
+
+-----
+
+-----
+       <--- getbuf rsp   0x5561dc78
+-----
+</pre>
 
 ```shell
 ./hex2raw < exploit3.txt > raw3.txt
-b *0x4017b4
+b *0x4017bd
 run -q < raw3.txt
 
 cat exploit3.txt | ./hex2raw | ./ctarget -q
