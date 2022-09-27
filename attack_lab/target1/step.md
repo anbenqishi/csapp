@@ -57,3 +57,24 @@ run -q < raw3.txt
 cat exploit3.txt | ./hex2raw | ./ctarget -q
 
 ```
+
+## level4
+
+1. 看着是说栈地址随机化了，不能再硬编码了；
+2. 看着是说farm里面的地址还是可以用的；
+
+pop %rax         58        0x4019ab
+movq %rax, %rdi  48 89 c7  0x4019c5 
+
+3. 出错点：
+   1. 对retq的栈操作不熟悉：执行当前栈顶指令，同时%rsp+8了；
+   2. 漏了最后retq后要填touch2的地址了；
+
+```shell
+./hex2raw < exploit4.txt > raw4.txt
+b *0x4017bd
+run -q < raw4.txt
+
+cat exploit4.txt | ./hex2raw | ./rtarget -q
+
+```
