@@ -1,0 +1,15 @@
+# steps:
+#   1. ../; make clean; make
+#   2. cd sim; make clean; make
+# tests:
+# Sample linked list
+#   .align 8
+#   ele1:
+#   .quad 0x00a
+#   .quad ele2
+#   ele2:
+#   .quad 0x0b0
+#   .quad ele3
+#   ele3:
+#   .quad 0xc00
+#   .quad 0
