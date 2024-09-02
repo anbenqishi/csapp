@@ -15,3 +15,22 @@
 
 
 ## part B 
+
+  * 依样画葫芦就出来了，虽然还没怎么理解整个流程...
+取值：
+  icode:ifun <- M_1[PC]
+  rA:rB      <- M_1[PC + 1]
+  ValC       <- M_8[PC + 2]
+  ValP       <- PC + 10
+译码：
+  ValB       <- R[rB]
+执行：
+  ValE       <- ValB + ValC
+  Set CC
+访存：
+写回：
+  R[rB]      <- ValE
+更新PC:
+  PC         <- ValP
+
+## part C
